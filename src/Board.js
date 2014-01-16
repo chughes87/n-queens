@@ -7,7 +7,7 @@
   window.Board = Backbone.Model.extend({
 
     initialize: function (params) {
-      if (typeof params == "undefined" || params == null) {
+      if (typeof params === "undefined" || params === null) {
         console.log('Good guess! But to use the Board() constructor, you must pass it an argument in one of the following formats:');
         console.log('\t1. An object. To create an empty board of size n:\n\t\t{n: %c<num>%c} - Where %c<num> %cis the dimension of the (empty) board you wish to instantiate\n\t\t%cEXAMPLE: var board = new Board({n:5})', 'color: blue;', 'color: black;','color: blue;', 'color: black;', 'color: grey;');
         console.log('\t2. An array of arrays (a matrix). To create a populated board of size n:\n\t\t[ [%c<val>%c,%c<val>%c,%c<val>%c...], [%c<val>%c,%c<val>%c,%c<val>%c...], [%c<val>%c,%c<val>%c,%c<val>%c...] ] - Where each %c<val>%c is whatever value you want at that location on the board\n\t\t%cEXAMPLE: var board = new Board([[1,0,0],[0,1,0],[0,0,1]])', 'color: blue;', 'color: black;','color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: blue;', 'color: black;', 'color: grey;');
@@ -39,6 +39,12 @@
 
     hasAnyRooksConflicts: function(){
       return this.hasAnyRowConflicts() || this.hasAnyColConflicts();
+    },
+
+    hasAnyRooksConflictsOn: function(rowIndex, colIndex){
+      return (
+        this.hasRowConflictAt(rowIndex) ||
+        this.hasColConflictAt(colIndex));
     },
 
     hasAnyQueenConflictsOn: function(rowIndex, colIndex){
@@ -81,13 +87,13 @@
           result = true;
           break;
         }
-      };
+      }
       return result; // fixme
     },
 
     // ROWS - run from left to right
     // --------------------------------------------------------------
-    // 
+    //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex){
       var row = this.get(rowIndex);
@@ -96,7 +102,7 @@
         if(row[i]){
           pieceCount++;
         }
-      };
+      }
       return pieceCount>1; // fixme
     },
 
@@ -109,7 +115,7 @@
 
     // COLUMNS - run from top to bottom
     // --------------------------------------------------------------
-    // 
+    //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex){
       var pieceCount = 0;
@@ -117,13 +123,13 @@
         if(this.get(i)[colIndex]){
           pieceCount++;
         }
-      };
+      }
       return pieceCount>1;
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function(){
-      return this.hasAnyConflicts(0, this.rows().length, this.hasColConflictAt)
+      return this.hasAnyConflicts(0, this.rows().length, this.hasColConflictAt);
     },
 
 
@@ -152,7 +158,7 @@
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function(){
-      return this.hasAnyConflicts(this.rows().length*-1, this.rows().length, this.hasMajorDiagonalConflictAt)
+      return this.hasAnyConflicts(this.rows().length*-1, this.rows().length, this.hasMajorDiagonalConflictAt);
     },
 
 
@@ -162,7 +168,7 @@
     // 
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow){
-      console.log(minorDiagonalColumnIndexAtFirstRow);
+      //console.log(minorDiagonalColumnIndexAtFirstRow);
       var pieceCount = 0;
       var boardDim = this.rows().length;
       var rowIndex = minorDiagonalColumnIndexAtFirstRow >= boardDim ? 
@@ -172,19 +178,17 @@
                        3 :
                        minorDiagonalColumnIndexAtFirstRow;
       for(; rowIndex < boardDim && colIndex < boardDim; rowIndex++, colIndex--){
-        console.log(minorDiagonalColumnIndexAtFirstRow+ "("+rowIndex+ " : " + colIndex+")"+this.get(rowIndex)[colIndex]);
+        // console.log(minorDiagonalColumnIndexAtFirstRow+ "("+rowIndex+ " : " + colIndex+")"+this.get(rowIndex)[colIndex]);
         if(this.get(rowIndex)[colIndex]){
           pieceCount++;
         }
       }
       return pieceCount>1;
-      return false; // fixme
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function(){
-      return this.hasAnyConflicts(0, this.rows().length*2, this.hasMinorDiagonalConflictAt)
-      return false; // fixme
+      return this.hasAnyConflicts(0, this.rows().length*2, this.hasMinorDiagonalConflictAt);
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
